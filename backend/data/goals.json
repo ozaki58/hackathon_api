@@ -1,0 +1,23 @@
+{
+    "goals": [
+      {
+        "id": 1,
+        "user_id":1,
+        "content": "英語を話せるようになりたい"
+        
+      },
+      {
+        "id": 2,
+        "user_id":1,
+        "content": "atcoderのc問題を解けるようになる"
+        
+      },
+      {
+        "id": 3,
+        "user_id":2,
+        "content": "いい大学に行く"
+        
+      }
+    ]
+  }
+  

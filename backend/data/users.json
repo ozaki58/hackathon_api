@@ -1,0 +1,16 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "username":"尾崎",
+        "email": "ozaki.shun@shi.com"
+        
+      },
+      {
+        "id": 2,
+        "username":"小石",
+        "email": "koishi@32.com"
+        
+      }
+    ]
+  }
