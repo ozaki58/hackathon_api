@@ -39,3 +39,24 @@ def get_quest(quest_id):
     return Response(quest_json, content_type='application/json; charset=utf-8')
    
 
+#クエストの詳細編集
+@quests_blueprint.route('/quests/<int:quest_id>', methods=['PATCH'])
+def quest_edit(quest_id):
+    
+    quest_data = request.json
+    if not quest_data:
+        return jsonify({"error":"no questData"})
+    
+    update_quest = {
+        "id" : quest_id,
+        "title" : quest_data.get('title' ,'no title'),
+        "discription" : quest_data.get('discription' ,'no discription'),
+        "status" : quest_data.get('status' , 'no status'),
+        "end_date" : quest_data.get('end_date' ,'no end_date')
+    }
+
+    quest_json = json.dumps(update_quest, ensure_ascii=False,indent=2)
+    
+    return Response(quest_json, content_type='application/json; charset=utf-8')
+ 
+    
