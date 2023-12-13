@@ -1,0 +1,29 @@
+{
+    "user_emojis":[
+        {
+            "id":1,
+            "user_id":1,
+            "emoji_id":1,
+            "date":"2021-12-21",
+            "content": "絵文字画像url"
+            
+        },
+        {
+            "id":2,
+            "user_id":1,
+            "emoji_id":2,
+            "date":"2022-02-01",
+            "content": "絵文字画像url_2"
+            
+        },
+        {
+            "id":3,
+            "user_id":2,
+            "emoji_id":4,
+            "date":"2022-01-01",
+            "content": "絵文字画像url_2"
+            
+        }
+
+    ]
+}
