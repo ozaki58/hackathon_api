@@ -6,8 +6,8 @@
             "prompt": "",
             "image": "",
             "genre": "",
-            "price": 1200,
-            "is_unlocked": "False"
+            "price": 1200
+            
         },
         {
             "id":2,
@@ -15,8 +15,8 @@
             "prompt": "",
             "image": "",
             "genre": "",
-            "price": 3000,
-            "is_unlocked": "False"
+            "price": 3000
+            
         }
 
     ]
