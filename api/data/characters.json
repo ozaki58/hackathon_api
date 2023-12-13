@@ -1,0 +1,23 @@
+{
+    "characters":[
+        {
+            "id":1,
+            "name": "リサ",
+            "prompt": "",
+            "image": "",
+            "genre": "",
+            "price": 1200
+            
+        },
+        {
+            "id":2,
+            "name": "薫",
+            "prompt": "",
+            "image": "",
+            "genre": "",
+            "price": 3000
+            
+        }
+
+    ]
+}

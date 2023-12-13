@@ -1,0 +1,19 @@
+{
+    "characters_status":[
+        {
+            "user_id":1,
+            "character_id": 1,
+            "is_favored": "False",
+            "is_unlocked": "False"
+        
+        },
+        {
+            "user_id":1,
+            "character_id": 2,
+            "is_favored": "False",
+            "is_unlocked": "False"
+            
+        }
+
+    ]
+}
