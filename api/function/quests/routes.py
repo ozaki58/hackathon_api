@@ -17,22 +17,22 @@ def get_quests_for_goal(user_id, goal_id):
         quests_data = json.load(f)
     
     # goal_idに基づいてクエストをフィルタリングする
-    filtered_quests = [quest for quest in quests_data["quests"] if quest["goal_id"] == goal_id]
+    filtered_quests = [quest for quest in quests_data["quests"] if quest["goal_id"] == goal_id and quest["user_id"] == user_id]
     
     quests_json = json.dumps(filtered_quests, ensure_ascii=False,indent=2)
     
     return Response(quests_json, content_type='application/json; charset=utf-8')
 
 #クエストの詳細を取得
-@quests_blueprint.route('/quests/<int:quest_id>', methods=['GET'])
-def get_quest(quest_id):
+@quests_blueprint.route('/users/<int:user_id>/goals/<int:goal_id>/quests/<int:quest_id>', methods=['GET'])
+def get_quest(user_id,goal_id,quest_id):
     
     file_path = os.path.join(current_app.root_path, 'data', 'quests.json')
     
     with open(file_path, 'r', encoding="utf-8") as f:
         data = json.load(f)
     
-    quest = [quest for quest in data["quests"] if quest["id"] == quest_id]
+    quest = [quest for quest in data["quests"] if quest["user_id"] == user_id and quest["goal_id"] == goal_id and quest["id"] == quest_id]
     
     quest_json = json.dumps(quest, ensure_ascii=False,indent=2)
     
@@ -40,23 +40,38 @@ def get_quest(quest_id):
    
 
 #クエストの詳細編集
-@quests_blueprint.route('/quests/<int:quest_id>', methods=['PATCH'])
-def quest_edit(quest_id):
+@quests_blueprint.route('/users/<int:user_id>/goals/<int:goal_id>/quests/<int:quest_id>', methods=['PATCH'])
+def quest_edit(user_id,goal_id,quest_id):
     
-    quest_data = request.json
-    if not quest_data:
-        return jsonify({"error":"no questData"})
+    req_quest_data = request.json
     
-    update_quest = {
-        "id" : quest_id,
-        "title" : quest_data.get('title' ,'no title'),
-        "discription" : quest_data.get('discription' ,'no discription'),
-        "status" : quest_data.get('status' , 'no status'),
-        "end_date" : quest_data.get('end_date' ,'no end_date')
-    }
+    file_path = os.path.join(current_app.root_path, 'data', 'quests.json')
+    with open(file_path, 'r', encoding="utf-8") as f:
+        quests_data = json.load(f)
+    new_title = request.json.get('title')
+    new_description = request.json.get('description')
+    new_status = request.json.get('status')
+    new_end_date = request.json.get('end_date')
 
-    quest_json = json.dumps(update_quest, ensure_ascii=False,indent=2)
+    #フィルタリング
+    try:
+        filtered_quest = [quest for quest in quests_data["quests"] if quest["user_id"] == user_id and quest["goal_id"] == goal_id and quest["id"] == quest_id]
     
-    return Response(quest_json, content_type='application/json; charset=utf-8')
- 
+    except:
+        return jsonify({"error": "指定されたデータは存在しない"}), 400
     
+    #詳細を変更
+    if new_title:
+        filtered_quest[0]["title"] = new_title
+    if new_description:
+        filtered_quest[0]["description"] = new_description
+    if new_status:
+        filtered_quest[0]["status"] = new_status
+    if new_end_date:
+        filtered_quest[0]["end_date"] = new_end_date
+
+    updated_data = filtered_quest
+    data_json = json.dumps(updated_data, ensure_ascii=False,indent=2)
+    
+    return Response(data_json, content_type='application/json; charset=utf-8')
+

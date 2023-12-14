@@ -3,6 +3,8 @@
         {
             "id": 1,
             "goal_id": 1,
+            "user_id": 1,
+            "description": "メモ",
             "title": "日常英単語を500個覚える",
             "status": "100",
             "end_date": "2023/12/13"
@@ -10,6 +12,8 @@
         {
             "id": 2,
             "goal_id": 1,
+            "user_id": 1,
+            "description": "メモ",
             "title": "chatgptで英語の練習",
             "status": "20",
             "end_date": "2023/12/18"
@@ -17,6 +21,8 @@
         {
             "id": 3,
             "goal_id": 2,
+            "user_id": 1,
+            "description": "メモ",
             "title": "アルゴリズムの勉強をする",
             "status": "0",
             "end_date": "2023/12/30"
