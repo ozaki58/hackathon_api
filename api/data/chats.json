@@ -1,0 +1,31 @@
+{
+    "chats": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "character_id": 1,
+            "content": "こんにちは。相談したいです",
+            "created_at": "2023-12-13T12:00:00Z",
+            "sender_type": 0
+            
+        },
+        {
+            "id": 2,
+            "user_id": 1,
+            "character_id": 1,
+            "content": "どういたしましたか？",
+            "created_at": "2023-12-13T12:21:00Z",
+            "sender_type": 1
+            
+        },
+        {
+            "id": 3,
+            "user_id": 1,
+            "character_id": 1,
+            "content": "目標に対してのモチベーションがなくなってきました",
+            "created_at": "2023-12-13T12:24:00Z",
+            "sender_type": 0
+            
+        }
+    ]
+}
