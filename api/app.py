@@ -9,9 +9,10 @@ from function.users.routes import users_blueprint
 from function.characters.routes import characters_blueprint
 from function.emojis.routes import emojis_blueprint
 from function.chats.routes import chats_blueprint
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app) 
 
 app.register_blueprint(goals_blueprint)
 app.register_blueprint(quests_blueprint)
@@ -20,8 +21,15 @@ app.register_blueprint(characters_blueprint)
 app.register_blueprint(emojis_blueprint)
 app.register_blueprint(chats_blueprint)
 
+
+
+@app.route('/some_path')
+def some_function():
+    return {'some_key': 'some_value'}
+
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
