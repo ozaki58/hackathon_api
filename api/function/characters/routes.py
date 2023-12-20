@@ -7,15 +7,7 @@ from flask import Blueprint
 
 characters_blueprint = Blueprint('characters', __name__)
 
-#　アプリに登録されているキャラクターリスト取得
-
-# @characters_blueprint.route('/characters', methods=['GET'])
-# def get_characters_list():
-#     file_path = os.path.join(current_app.root_path, 'data', 'characters.json')
-#     with open(file_path, 'r', encoding="utf-8") as f:
-#         all_characters= json.load(f)
-#     characters_json = json.dumps(all_characters, ensure_ascii=False,indent=2)
-#     return Response(characters_json, content_type='application/json; charset=utf-8')
+# 　アプリに登録されているキャラクターリスト取得
 
 @characters_blueprint.route('/characters', methods=['GET'])
 def get_characters_list():
@@ -81,6 +73,16 @@ def favor(user_id,character_id):
     
     return Response(filtered_json, content_type='application/json; charset=utf-8')
     
-
+# お気に入りキャラクター取得
+@characters_blueprint.route('/users/<int:user_id>/favorites', methods=['GET'])
+def get_favorites(user_id):
+    file_path = os.path.join(current_app.root_path, 'data', 'characters_status.json')
+    with open(file_path, 'r', encoding="utf-8") as f:
+        characters_status = json.load(f)
+    # ユーザーのお気に入りキャラクターをフィルタリング
+    user_favorites = [status for status in characters_status['characters_status']
+                      if status['user_id'] == user_id and status['is_favored'] == "True"]
+    
+    return jsonify(user_favorites)
 
 
