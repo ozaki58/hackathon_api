@@ -9,9 +9,10 @@ from function.users.routes import users_blueprint
 from function.characters.routes import characters_blueprint
 from function.emojis.routes import emojis_blueprint
 from function.chats.routes import chats_blueprint
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
-
+# MySQLデータベース設定
 
 app.register_blueprint(goals_blueprint)
 app.register_blueprint(quests_blueprint)

@@ -121,11 +121,11 @@ def quest_complete(user_id,goal_id,quest_id):
     data_json = json.dumps(updated_data, ensure_ascii=False,indent=2)
         
     return Response(data_json, content_type='application/json; charset=utf-8')
-
-"""#目標をchatbotに送り、クエストリストを受け取李データベースに保存する
+""""
+#目標をchatbotに送り、クエストリストを受けとりデータベースに保存する
 @quests_blueprint.routes('/users/<int:user_id>/goals/<int:goal_id>/generate', methods = ['POST'])
 def post_quests(user_id,goal_id):
-    # クライアントからのリクエストボディを取得
+    # クライとりアントからのリクエストボディを取得
     goal_content = request.json.get('content')
 
     # チャットボットのAPIエンドポイントにリクエストを送信
