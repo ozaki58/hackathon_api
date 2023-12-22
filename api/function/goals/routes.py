@@ -17,7 +17,7 @@ def get_user_goals(user_id):
     
     # goalsのリストをuser_idでフィルタする
     user_goals = [goal for goal in data['goals'] if goal['user_id'] == user_id]
-   
+    
     return jsonify(user_goals)
 
 #　目標を登録する

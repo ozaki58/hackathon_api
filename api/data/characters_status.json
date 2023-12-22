@@ -10,7 +10,21 @@
         {
             "user_id":1,
             "character_id": 2,
+            "is_favored": "True",
+            "is_unlocked": "False"
+            
+        },
+        {
+            "user_id":1,
+            "character_id": 2,
             "is_favored": "False",
+            "is_unlocked": "False"
+            
+        },
+        {
+            "user_id":2,
+            "character_id": 4,
+            "is_favored": "True",
             "is_unlocked": "False"
             
         }
