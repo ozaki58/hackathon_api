@@ -4,8 +4,8 @@
             "id":1,
             "name": "リサ",
             "prompt": "",
-            "image": "",
-            "genre": "",
+            "image": "character/character1.png",
+            "genre_id": "1",
             "price": 1200
             
         },
@@ -13,8 +13,45 @@
             "id":2,
             "name": "薫",
             "prompt": "",
-            "image": "",
-            "genre": "",
+            "image": "character/character2.png",
+            "genre_id": "1",
+            "price": 3000
+            
+        },
+        
+        {
+            "id":3,
+            "name": "ミツキ",
+            "prompt": "",
+            "image": "character/character3.png",
+            "genre_id": "2",
+            "price": 3000
+            
+        },
+        {
+            "id":3,
+            "name": "ミツキ",
+            "prompt": "",
+            "image": "character/character4.png",
+            "genre_id": "2",
+            "price": 3000
+            
+        },
+        {
+            "id":3,
+            "name": "ミツキ",
+            "prompt": "",
+            "image": "character/character1.png",
+            "genre_id": "3",
+            "price": 3000
+            
+        },
+        {
+            "id":3,
+            "name": "ミツキ",
+            "prompt": "",
+            "image": "character/character2.png",
+            "genre_id": "4",
             "price": 3000
             
         }

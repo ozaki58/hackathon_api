@@ -24,20 +24,19 @@ def get_quests_for_goal(user_id, goal_id):
     return Response(quests_json, content_type='application/json; charset=utf-8')
 
 #クエストの詳細を取得
-@quests_blueprint.route('/users/<int:user_id>/goals/<int:goal_id>/quests/<int:quest_id>', methods=['GET'])
-def get_quest(user_id,goal_id,quest_id):
+@quests_blueprint.route('/quests/<int:quest_id>', methods=['GET'])
+def get_quest(quest_id):
     
     file_path = os.path.join(current_app.root_path, 'data', 'quests.json')
     
     with open(file_path, 'r', encoding="utf-8") as f:
         data = json.load(f)
     
-    quest = [quest for quest in data["quests"] if quest["user_id"] == user_id and quest["goal_id"] == goal_id and quest["id"] == quest_id]
+    quest = [quest for quest in data["quests"] if quest['id'] == quest_id]
     
     quest_json = json.dumps(quest[0], ensure_ascii=False,indent=2)
     
     return Response(quest_json, content_type='application/json; charset=utf-8')
-   
 
 #クエストの詳細編集
 @quests_blueprint.route('/users/<int:user_id>/goals/<int:goal_id>/quests/<int:quest_id>', methods=['PATCH'])
