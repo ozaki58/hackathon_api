@@ -125,7 +125,7 @@ def post_chat(user_id, character_id):
     )
     # リクエストからユーザーのメッセージと送信者タイプを取得
     content = request.json.get('content')
-    sender_type = request.json.get('sender_type')
+    
 
     # OpenAIのAPIを使用してレスポンスを生成
     prompt = content  # または過去の対話を含めたプロンプト
@@ -140,7 +140,7 @@ def post_chat(user_id, character_id):
         with conn.cursor() as cursor:
             cursor.execute(
                 'INSERT INTO chats (user_id, character_id, content, sender_type) VALUES (%s, %s, %s, %s)',
-                (user_id, character_id, content, sender_type)
+                (user_id, character_id, content, 1)
             )
             conn.commit()
 
