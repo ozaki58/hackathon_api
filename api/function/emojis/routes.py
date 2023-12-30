@@ -3,46 +3,74 @@ import json
 import os
 from datetime import datetime
 from flask import Blueprint
-
+import pymysql.cursors
+import base64
 
 emojis_blueprint = Blueprint('emojis', __name__)
+#データベース設定
+def get_db_connection():
+    return pymysql.connect(host='localhost',
+                    user='root',
+                    db='hackathon_project',
+                    charset='utf8mb4',
+                    password='ozaki',
+                    cursorclass=pymysql.cursors.DictCursor)
 
 #絵文字のリストを取得
-@emojis_blueprint.route('/emojis', methods = ['GET'])
+@emojis_blueprint.route('/emojis', methods=['GET'])
 def get_emojis():
-    file_path = os.path.join(current_app.root_path, 'data', 'emojis.json')
-    
-    with open(file_path, 'r', encoding="utf-8") as f:
-        emojis_data = json.load(f)
-    
-    # user_idに基づいてusersをフィルタリングする
-    
-    
-    emojis_json = json.dumps(emojis_data, ensure_ascii=False,indent=2)
-    
-    return Response(emojis_json, content_type='application/json; charset=utf-8')
+    # データベース接続を取得
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            # 絵文字のリストを取得するクエリを実行
+            cursor.execute('SELECT * FROM emojis')
+            emojis = cursor.fetchall()
+
+            # 結果をJSON形式でクライアントに返却
+            return jsonify(emojis)
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Database error"}), 500
+    finally:
+        conn.close()
 
 
 
 #ユーザーが記録した絵文字を保存
 @emojis_blueprint.route('/users/<int:user_id>/emojis/<int:emoji_id>/record', methods=['POST'])
-def record_emoji(user_id,emoji_id):
+def record_emoji(user_id, emoji_id):
+    # データベース接続を取得
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            # 現在の日時を取得
+            recorded_at = datetime.utcnow()
 
-    id = 1 # これはダミーのID。実際はデータベースに対応させる
-    
-  
-    recorded_at = datetime.utcnow().isoformat() + 'Z'  
+            # 絵文字記録をデータベースに挿入するクエリを実行
+            cursor.execute('INSERT INTO user_emojis (user_id, emoji_id, date) VALUES (%s, %s, %s)', 
+                           (user_id, emoji_id, recorded_at))
+            
+            # 挿入されたレコードのIDを取得
+            record_id = cursor.lastrowid
 
-    # emojiを記録（実際のアプリではデータベースに保存する）
-    recorded_emoji = {
-        "id": id,
-        "user_id": user_id,
-        "emoji_id": emoji_id,
-        "date": recorded_at
-    }
-    
-    # 新しい目標を返す
-    return jsonify(recorded_emoji), 201
+            # データベースの変更をコミット
+            conn.commit()
+
+            # 新しい絵文字記録を返す
+            return jsonify({
+                "id": record_id,
+                "user_id": user_id,
+                "emoji_id": emoji_id,
+                "recorded_at": recorded_at.isoformat() + 'Z'
+            }), 201
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+        conn.rollback()
+        return jsonify({"error": "Database error"}), 500
+    finally:
+        conn.close()
+
 
 
 #特定の日付に紐づく絵文字データの取得

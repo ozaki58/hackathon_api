@@ -10,17 +10,18 @@ import pymysql.cursors
 
 
 chats_blueprint = Blueprint('chats', __name__)
-
-#目標をgptAPIでタスク分解し、作成されたクエストを保存
-@chats_blueprint.route('/users/<int:user_id>/chatbot/generate_quests', methods=['POST'])
-def generate_quests(user_id):
-    # データベース設定。リクエストごとに定義しないと連続したcrudができない。(最後にコネクションを閉じるため)
-    conn = pymysql.connect(host='localhost',
+def get_db_connection():
+    return pymysql.connect(host='localhost',
                     user='root',
                     db='hackathon_project',
                     charset='utf8mb4',
                     password='ozaki',
                     cursorclass=pymysql.cursors.DictCursor)
+#目標をgptAPIでタスク分解し、作成されたクエストを保存
+@chats_blueprint.route('/users/<int:user_id>/chatbot/generate_quests', methods=['POST'])
+def generate_quests(user_id):
+    # データベース設定。リクエストごとに定義しないと連続したcrudができない。(最後にコネクションを閉じるため)
+    conn = get_db_connection()
     
      # リクエストから目標を取得
     # OpenAI APIキーを設定する
@@ -112,12 +113,7 @@ def get_completion(prompt, client_instance, model="gpt-3.5-turbo-1106"):
 @chats_blueprint.route('/users/<int:user_id>/characters/<int:character_id>/chat', methods=['POST'])
 def post_chat(user_id, character_id):
 
-    conn = pymysql.connect(host='localhost',
-                    user='root',
-                    db='hackathon_project',
-                    charset='utf8mb4',
-                    password='ozaki',
-                    cursorclass=pymysql.cursors.DictCursor)
+    conn = get_db_connection()
     
     client = OpenAI(
         
