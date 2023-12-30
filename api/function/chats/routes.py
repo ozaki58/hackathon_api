@@ -1,34 +1,30 @@
-from flask import Flask, jsonify, current_app,request,Response
+from flask import Flask, jsonify, current_app,request,Response,Blueprint
 import json
 import os
+from flask import current_app
 from datetime import datetime
-from flask import Blueprint
-from openai import OpenAI
-from flask_mysqldb import MySQL
-from db import conn
-import pymysql.cursors
 
 
 chats_blueprint = Blueprint('chats', __name__)
-def get_db_connection():
-    return pymysql.connect(host='localhost',
-                    user='root',
-                    db='hackathon_project',
-                    charset='utf8mb4',
-                    password='ozaki',
-                    cursorclass=pymysql.cursors.DictCursor)
-#目標をgptAPIでタスク分解し、作成されたクエストを保存
-@chats_blueprint.route('/users/<int:user_id>/chatbot/generate_quests', methods=['POST'])
-def generate_quests(user_id):
-    # データベース設定。リクエストごとに定義しないと連続したcrudができない。(最後にコネクションを閉じるため)
-    conn = get_db_connection()
-    
-     # リクエストから目標を取得
-    # OpenAI APIキーを設定する
-    client = OpenAI(
-        
-        api_key=('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'),
-    )
+@chats_blueprint.route('/users/<int:user_id>/characters/<int:character_id>/date/<int:year>/<int:month>/<int:day>', methods=['GET'])
+def get_chats_for_date(user_id, character_id,year, month, day):
+    try:
+        file_path = os.path.join(current_app.root_path, 'data', 'chats.json')
+        with open(file_path, 'r', encoding="utf-8") as f:
+            chats_data = json.load(f)
+    except IOError:
+        return jsonify({"error": "File not found"}), 404
+
+    # 日付のフォーマットを統一する
+    formatted_date = f"{year}-{month:02d}-{day:02d}"
+
+    filtered_chats = [chat for chat in chats_data["chats"] 
+                    if chat['user_id'] == user_id 
+                    and chat['character_id'] == character_id 
+                    and datetime.strptime(chat['created_at'].split("T")[0], '%Y-%m-%d').strftime('%Y-%m-%d') == formatted_date]
+    return jsonify(filtered_chats)
+
+    # return type(formatted_date);
 
     goal = request.json.get('goal')
     #目標をデータベースに保存
@@ -225,9 +221,5 @@ def get_chats_history():
     if sort_by == 'date':
         result.sort(key=lambda x: x['created_at'], reverse=(order != 'asc'))
 
-    return jsonify(result)
-
-
-
-    
- 
+    chats_json = json.dumps(filtered_chats, ensure_ascii=False,indent=2)   
+    return Response(chats_json, content_type='application/json; charset=utf-8')

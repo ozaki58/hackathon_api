@@ -115,7 +115,7 @@ def quest_edit(user_id, goal_id, quest_id):
     finally:
         conn.close()
 
- #クエストの完了とコインの取得
+#クエストの完了とコインの取得
 @quests_blueprint.route('/users/<int:user_id>/goals/<int:goal_id>/quests/<int:quest_id>/complete', methods=['PATCH']) 
 def quest_complete(user_id,goal_id,quest_id):
 
