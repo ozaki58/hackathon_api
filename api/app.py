@@ -23,6 +23,7 @@ app.register_blueprint(chats_blueprint)
 
 
 
+
 @app.route('/some_path')
 def some_function():
     return {'some_key': 'some_value'}

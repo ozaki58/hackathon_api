@@ -1,11 +1,30 @@
-from flask import Flask, jsonify, current_app,request,Response
+from flask import Flask, jsonify, current_app,request,Response,Blueprint
 import json
 import os
+from flask import current_app
 from datetime import datetime
-from flask import Blueprint
 
 
 chats_blueprint = Blueprint('chats', __name__)
+@chats_blueprint.route('/users/<int:user_id>/characters/<int:character_id>/date/<int:year>/<int:month>/<int:day>', methods=['GET'])
+def get_chats_for_date(user_id, character_id,year, month, day):
+    try:
+        file_path = os.path.join(current_app.root_path, 'data', 'chats.json')
+        with open(file_path, 'r', encoding="utf-8") as f:
+            chats_data = json.load(f)
+    except IOError:
+        return jsonify({"error": "File not found"}), 404
+
+    # 日付のフォーマットを統一する
+    formatted_date = f"{year}-{month:02d}-{day:02d}"
+
+    filtered_chats = [chat for chat in chats_data["chats"] 
+                    if chat['user_id'] == user_id 
+                    and chat['character_id'] == character_id 
+                    and datetime.strptime(chat['created_at'].split("T")[0], '%Y-%m-%d').strftime('%Y-%m-%d') == formatted_date]
+    return jsonify(filtered_chats)
+
+    # return type(formatted_date);
 
 @chats_blueprint.route('/users/<int:user_id>/characters/<int:character_id>/chat', methods = ['POST'])
 def post_chat(user_id,character_id):
@@ -58,4 +77,3 @@ def get_chats_history():
 
     chats_json = json.dumps(filtered_chats, ensure_ascii=False,indent=2)   
     return Response(chats_json, content_type='application/json; charset=utf-8')
- 
