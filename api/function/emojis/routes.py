@@ -81,20 +81,26 @@ def get_emoji_filtered_date(user_id, date):
         # URLから受け取った日付が正しい形式であるか確認する
         correct_date = datetime.strptime(date, '%Y-%m-%d').date()
     except ValueError:
-        # 日付の形式が間遍えればエラーを返す
+        # 日付の形式が間違えればエラーを返す
         return jsonify({"error": "Incorrect date format, should be YYYY-MM-DD"}), 400
     
-    file_path = os.path.join(current_app.root_path, 'data', 'user_emojis.json')
-    with open(file_path, 'r', encoding="utf-8") as f:
-        user_emojis_data = json.load(f)
-    
-    # emojiのリストをuser_idと正しい形式のdateでフィルタする
-    filtered_emoji = [
-        emoji for emoji in user_emojis_data['user_emojis']
-        if emoji['user_id'] == user_id and emoji['date'] == correct_date.isoformat()
-    ]
-    
-    return jsonify(filtered_emoji)
+    # データベース接続を取得
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            # 特定の日付に紐づく絵文字データを取得するクエリを実行
+            cursor.execute('SELECT * FROM user_emojis WHERE user_id = %s AND date = %s', 
+                           (user_id, correct_date))
+            emojis = cursor.fetchall()
+
+            # 結果をJSON形式でクライアントに返却
+            return jsonify(emojis)
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Database error"}), 500
+    finally:
+        conn.close()
+
 
 #特定の期間の日付に紐づく絵文字データの取得
 @emojis_blueprint.route('/users/<int:user_id>/emojis', methods=['GET'])
