@@ -47,37 +47,23 @@ def update_user(user_id):
     if not user_data:
         return jsonify({"error": "No data provided"}), 400
     
-    # データベース接続を取得
-    conn = get_db_connection()
-    try:
-        with conn.cursor() as cursor:
-            # 更新するフィールドの値を取得
-            name = user_data.get('name')
-            email = user_data.get('email')
-            
-            # ユーザー情報を更新するクエリを実行
-            cursor.execute(
-                'UPDATE users SET name = %s, email = %s WHERE id = %s',
-                (name, email, user_id)
-            )
-            
-            # 変更があったか確認し、なければエラーを返す
-            if cursor.rowcount == 0:
-                return jsonify({"error": "User not found or data is the same"}), 404
-            
-            # データベースの変更をコミット
-            conn.commit()
-            
-            # 更新されたユーザー情報を返す
-            return jsonify({
-                "id": user_id,
-                "name": name,
-                "email": email
-            }), 200
-    except pymysql.MySQLError as e:
-        print(f"Error: {e}")
-        conn.rollback()
-        return jsonify({"error": "Database error"}), 500
-    finally:
-        conn.close()
+
+    user_json = json.dumps(updated_user, ensure_ascii=False,indent=2)
     
+    return Response(user_json, content_type='application/json; charset=utf-8')
+ 
+    
+# ユーザー情報を更新
+@users_blueprint.route('/users/<int:user_id>/coin', methods=['GET'])
+def get_coin(user_id):
+    file_path = os.path.join(current_app.root_path, 'data', 'coins.json')
+    
+    with open(file_path, 'r', encoding="utf-8") as f:
+        users_data = json.load(f)
+    
+    # user_idに基づいてusersをフィルタリングする
+    filtered_user = [coin for coin in users_data["coins"] if coin["user_id"] == user_id]
+    
+    user_json = json.dumps(filtered_user, ensure_ascii=False,indent=2)
+    
+    return Response(user_json, content_type='application/json; charset=utf-8')

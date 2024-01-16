@@ -1,33 +1,33 @@
 {
-    "characters_status":[
+    "characters_status": [
         {
-            "user_id":1,
+            "user_id": 1,
             "character_id": 1,
-            "is_favored": "False",
-            "is_unlocked": "False"
-        
+            "is_favored": "True",
+            "is_unlocked": "True"
         },
         {
-            "user_id":1,
+            "user_id": 1,
             "character_id": 2,
             "is_favored": "True",
-            "is_unlocked": "False"
-            
+            "is_unlocked": "True"
         },
         {
-            "user_id":1,
-            "character_id": 2,
+            "user_id": 1,
+            "character_id": 3,
             "is_favored": "False",
-            "is_unlocked": "False"
-            
+            "is_unlocked": "True"
         },
         {
-            "user_id":2,
+            "user_id": 2,
             "character_id": 4,
             "is_favored": "True",
-            "is_unlocked": "False"
-            
+            "is_unlocked": "True"
+        },
+        {
+            "user_id": 3,
+            "character_id": 4,
+            "is_unlocked": "True"
         }
-
     ]
 }
