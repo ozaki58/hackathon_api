@@ -7,7 +7,8 @@
             "description": "メモ",
             "title": "日常英単語を500個覚える",
             "status": 10,
-            "end_date": "2023/12/13"
+            "end_date": "2023/12/13",
+            "coins_distributed": false
         },
         {
             "id": 2,
@@ -16,61 +17,68 @@
             "description": "メモ",
             "title": "chatgptで英語の練習",
             "status": 20,
-            "end_date": "2023/12/18"
+            "end_date": "2023/12/18",
+            "coins_distributed": false
         },
         {
             "id": 3,
             "goal_id": 2,
             "user_id": 1,
-            "description": "メモ",
-            "title": "アルゴリズムの勉強をする",
-            "status": 40,
-            "end_date": "2023/12/30"
+            "description": "アルゴリズムの勉強\n・アルゴリズムについての書籍を読む\n・どうしたらいいのかを聞く！！",
+            "title": "アルゴリズムの勉強をする！！",
+            "status": 100,
+            "end_date": "2024-01-08",
+            "coins_distributed": false
         },
         {
             "id": 4,
             "goal_id": 2,
             "user_id": 1,
-            "description": "言語の基礎を学ぶ: Python、C++、Javaなど、選んだプログラミング言語の基本を理解する。基本的なアルゴリズムを学ぶ: ソート、探索（線形探索、二分探索）など。データ構造について学ぶ: 配列、リスト、スタック、キュー、ツリー、グラフなど。",
-            "title": "基本的なプログラミングスキルの習得",
-            "status": 40,
-            "end_date": "2023/12/30"
+            "description": "言語の基礎を学ぶ: Python、C++、Javaなど、選んだプログラミング言語の基本を理解する。\n基本的なアルゴリズムを学ぶ: ソート、探索（線形探索、二分探索）など。\nデータ構造について学ぶ: 配列、リスト、スタック、キュー、ツリー、グラフなど。\n",
+            "title": "基本的なプログラミングスキルの習得〜〜〜！！",
+            "status": 100,
+            "end_date": "2024-01-06",
+            "coins_distributed": true
         },
         {
             "id": 5,
             "goal_id": 2,
             "user_id": 1,
-            "description": "AtCoderの過去のA問題とB問題を解く: 基本的なスキルを磨く。問題を読み、適切なアルゴリズムを選択する練習をする。",
+            "description": "AtCoderの過去のA問題とB問題を解く: 基本的なスキルを磨く。\n問題を読み、適切なアルゴリズムを選択する練習をする。\n",
             "title": "簡単な問題を解いてみる",
             "status": 50,
-            "end_date": "2023/12/30"
+            "end_date": "2023/12/30",
+            "coins_distributed": false
         },
         {
             "id": 6,
             "goal_id": 2,
             "user_id": 1,
             "title": "アルゴリズムとデータ構造の深堀り",
-            "description": "より高度なアルゴリズムを学ぶ: 動的計画法、グラフ理論、数論など。データ構造の応用を学ぶ: バイナリサーチツリー、ヒープ、ハッシュテーブルなど。",
-            "status": 80,
-            "end_date": "2023/12/30"
+            "description": "より高度なアルゴリズムを学ぶ: \n動的計画法、グラフ理論、数論など。\nデータ構造の応用を学ぶ: \nバイナリサーチツリー、ヒープ、ハッシュテーブルなど。",
+            "status": "100",
+            "end_date": "2024-01-24",
+            "coins_distributed": false
         },
         {
             "id": 7,
             "goal_id": 2,
             "user_id": 1,
-            "description": "C問題の特徴を理解する: これらの問題の傾向やパターンを把握する。過去のC問題を解いてみる: 実際に問題を解き、解法を理解する。",
+            "description": "C問題の特徴を理解する: \nこれらの問題の傾向やパターンを把握する。\n過去のC問題を解いてみる: \n実際に問題を解き、解法を理解する。",
             "title": "C問題の解析と練習",
             "status": 30,
-            "end_date": "2023/12/30"
+            "end_date": "2023/12/30",
+            "coins_distributed": false
         },
         {
             "id": 8,
             "goal_id": 2,
             "user_id": 1,
-            "description": "解いた問題の復習: 正解だけでなく、他の解法も学ぶ。コードの最適化: より効率的なコードを書くための練習。",
+            "description": "解いた問題の復習: \n正解だけでなく、他の解法も学ぶ。\nコードの最適化: \nより効率的なコードを書くための練習。",
             "title": "レビューと改善",
             "status": 40,
-            "end_date": "2023/12/30"
+            "end_date": "2023/12/30",
+            "coins_distributed": false
         },
         {
             "id": 9,
@@ -79,17 +87,38 @@
             "description": "コミュニティに参加する: AtCoderのコミュニティやオンラインフォーラムに参加して、他の人の解法やアドバイスを得る。",
             "title": "コミュニティとの交流",
             "status": 70,
-            "end_date": "2023/12/30"
+            "end_date": "2023/12/30",
+            "coins_distributed": false
         },
         {
             "id": 10,
             "goal_id": 2,
             "user_id": 1,
-            "description": "時間管理を学ぶ: 制限時間内に問題を解く練習をする。エッジケースとデバッグ: 異常な入力やエッジケースに対応するためのデバッグスキルを磨く。",
+            "description": "時間管理を学ぶ: 制限時間内に問題を解く練習をする。\nエッジケースとデバッグ: 異常な入力やエッジケースに対応するためのデバッグスキルを磨く。",
             "title": "問題解決スキルの向上",
             "status": 40,
-            "end_date": "2023/12/30"
+            "end_date": "2024-01-21",
+            "coins_distributed": false
+        },
+        {
+            "id": 11,
+            "user_id": 1,
+            "goal_id": 2,
+            "title": "ｓｓｓｓｓｓｓｓｓｓｓｓｓｓｓｓｓｓ",
+            "description": "ｓｓｓｓｓｓｓｓｓｓｓｓｓｓｓ",
+            "status": "48",
+            "end_date": "2024-01-17",
+            "coins_distributed": false
+        },
+        {
+            "id": 12,
+            "user_id": 1,
+            "goal_id": 2,
+            "title": "クエスト登録",
+            "description": "クエスト登録",
+            "status": 0,
+            "end_date": "2024-01-18",
+            "coins_distributed": false
         }
-        
     ]
 }

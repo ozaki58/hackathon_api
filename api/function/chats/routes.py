@@ -26,31 +26,75 @@ def get_chats_for_date(user_id, character_id,year, month, day):
 
     # return type(formatted_date);
 
-@chats_blueprint.route('/users/<int:user_id>/characters/<int:character_id>/chat', methods = ['POST'])
-def post_chat(user_id,character_id):
 
+chats_blueprint = Blueprint('chats', __name__)
+@chats_blueprint.route('/users/<int:user_id>/characters/<int:character_id>/date/<int:year>/<int:month>/<int:day>', methods=['GET'])
+def get_chats_for_date_character(user_id, character_id,year, month, day):
+    try:
+        file_path = os.path.join(current_app.root_path, 'data', 'chats.json')
+        with open(file_path, 'r', encoding="utf-8") as f:
+            chats_data = json.load(f)
+    except IOError:
+        return jsonify({"error": "File not found"}), 404
+
+    # 日付のフォーマットを統一する
+    formatted_date = f"{year}-{month:02d}-{day:02d}"
+
+    filtered_chats = [chat for chat in chats_data["chats"] 
+                    if chat['user_id'] == user_id 
+                    and chat['character_id'] == character_id 
+                    and datetime.strptime(chat['created_at'].split("T")[0], '%Y-%m-%d').strftime('%Y-%m-%d') == formatted_date]
+    return jsonify(filtered_chats)
+
+@chats_blueprint.route('/users/<int:user_id>/date/<int:year>/<int:month>/<int:day>', methods=['GET'])
+def get_chats_for_date(user_id,year, month, day):
+    try:
+        file_path = os.path.join(current_app.root_path, 'data', 'chats.json')
+        with open(file_path, 'r', encoding="utf-8") as f:
+            chats_data = json.load(f)
+    except IOError:
+        return jsonify({"error": "File not found"}), 404
+
+    # 日付のフォーマットを統一する
+    formatted_date = f"{year}-{month:02d}-{day:02d}"
+
+    filtered_chats = [chat for chat in chats_data["chats"] 
+                    if chat['user_id'] == user_id 
+                    and datetime.strptime(chat['created_at'].split("T")[0], '%Y-%m-%d').strftime('%Y-%m-%d') == formatted_date]
+    return jsonify(filtered_chats)
+
+@chats_blueprint.route('/users/<int:user_id>/characters/<int:character_id>/chat', methods=['POST'])
+def post_chat(user_id, character_id):
     content = request.json.get('content')
     sender_type = request.json.get('sender_type')
 
-    if content and sender_type is None:
-        return jsonify({"error": "Content and sender_type is required."}), 400
-    
-    new_chat_id = 1 # これはダミーのID。実際はデータベースに対応させる
-    
-    
-    created_at = datetime.utcnow().isoformat() + 'Z'  
+    if not content or sender_type is None:
+        return jsonify({"error": "Content and sender_type are required."}), 400
 
-    # 新しいchatを作成（実際のアプリではデータベースに保存する）
+    # chats.json ファイルのパスを取得
+    file_path = os.path.join(current_app.root_path, 'data','chats.json')
+
+    # chats.json ファイルを読み込む
+    with open(file_path, 'r', encoding='utf-8') as file:
+        chats = json.load(file)
+
+    # 新しいチャットメッセージを作成
     new_chat = {
-        "id": new_chat_id,
-        "user_id":user_id,
-        "character_id":character_id,
+        "id": len(chats['chats']) + 1,  # 仮のID生成
+        "user_id": user_id,
+        "character_id": character_id,
         "content": content,
-        "created_at": created_at,
+        "created_at": datetime.utcnow().isoformat() + 'Z',
         "sender_type": sender_type
     }
-    
-    # 新しいchatを返す
+
+    # チャットリストに新しいメッセージを追加
+    chats['chats'].append(new_chat)
+
+    # 更新されたデータをファイルに書き戻す
+    with open(file_path, 'w', encoding='utf-8') as file:
+        json.dump(chats, file, ensure_ascii=False, indent=4)
+
     return jsonify(new_chat), 201
 
 @chats_blueprint.route('/chats', methods = ['GET'])    
