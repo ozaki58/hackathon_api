@@ -7,11 +7,11 @@ import pymysql.cursors
 import base64
 #データベース設定
 def get_db_connection():
-    return pymysql.connect(host='localhost',
-                    user='root',
+    return pymysql.connect(host='tutorial.clmkyaosgimn.ap-northeast-1.rds.amazonaws.com',
+                    user='admin',
                     db='hackathon_project',
                     charset='utf8mb4',
-                    password='ozaki',
+                    password='OZaKi1030',
                     cursorclass=pymysql.cursors.DictCursor)
 
 users_blueprint = Blueprint('users', __name__)
@@ -56,14 +56,23 @@ def update_user(user_id):
 # ユーザー情報を更新
 @users_blueprint.route('/users/<int:user_id>/coin', methods=['GET'])
 def get_coin(user_id):
-    file_path = os.path.join(current_app.root_path, 'data', 'coins.json')
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            # user_coins テーブルから特定のユーザーIDに対応するコイン情報を取得
+            cursor.execute('''
+                SELECT user_id, amount, acquired_date, expiry_date
+                FROM user_coins
+                WHERE user_id = %s
+            ''', (user_id,))
+            user_coins = cursor.fetchall()
+        
+        # 結果をJSON形式でクライアントに返却
+        return jsonify(user_coins)
     
-    with open(file_path, 'r', encoding="utf-8") as f:
-        users_data = json.load(f)
-    
-    # user_idに基づいてusersをフィルタリングする
-    filtered_user = [coin for coin in users_data["coins"] if coin["user_id"] == user_id]
-    
-    user_json = json.dumps(filtered_user, ensure_ascii=False,indent=2)
-    
-    return Response(user_json, content_type='application/json; charset=utf-8')
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Database error"}), 500
+    finally:
+        conn.close()
+

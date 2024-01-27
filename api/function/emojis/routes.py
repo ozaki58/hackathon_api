@@ -9,131 +9,88 @@ import base64
 emojis_blueprint = Blueprint('emojis', __name__)
 #データベース設定
 def get_db_connection():
-    return pymysql.connect(host='localhost',
-                    user='root',
+    return pymysql.connect(host='tutorial.clmkyaosgimn.ap-northeast-1.rds.amazonaws.com',
+                    user='admin',
                     db='hackathon_project',
                     charset='utf8mb4',
-                    password='ozaki',
+                    password='OZaKi1030',
                     cursorclass=pymysql.cursors.DictCursor)
 
 #絵文字のリストを取得
-<<<<<<< HEAD
-@emojis_blueprint.route('/emojis', methods=['GET'])
+@emojis_blueprint.route('/emojis', methods = ['GET'], endpoint='get_emojis')
 def get_emojis():
-    # データベース接続を取得
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            # 絵文字のリストを取得するクエリを実行
             cursor.execute('SELECT * FROM emojis')
-            emojis = cursor.fetchall()
-
-            # 結果をJSON形式でクライアントに返却
-            return jsonify(emojis)
+            emojis_result = cursor.fetchall()  # 結果を変数に保存
+        return jsonify({'emojis': emojis_result})
+    
     except pymysql.MySQLError as e:
         print(f"Error: {e}")
         return jsonify({"error": "Database error"}), 500
     finally:
         conn.close()
-=======
-@emojis_blueprint.route('/emojis', methods = ['GET'], endpoint='get_emojis')
-def get_emojis():
-    file_path = os.path.join(current_app.root_path, 'data', 'emojis.json')
-    
-    with open(file_path, 'r', encoding="utf-8") as f:
-        emojis_data = json.load(f)
-    
-    # user_idに基づいてusersをフィルタリングする
-    emojis_json = json.dumps(emojis_data, ensure_ascii=False,indent=2)
-    
-    return Response(emojis_json, content_type='application/json; charset=utf-8')
->>>>>>> e11ac34 (データ変更、APIの書き込みを追加)
 
 @emojis_blueprint.route('/emojis/<int:user_id>', methods=['GET'],endpoint='get_emojis_by_user')
 def get_emojis_filtered_users(user_id): 
-    file_path = os.path.join(current_app.root_path, 'data', 'user_emojis.json')
-
-    with open(file_path, 'r', encoding="utf-8") as f:
-        emojis_data = json.load(f)
-
-    # user_idに基づいて絵文字データをフィルタリング
-    filtered_emojis = [emoji for emoji in emojis_data['user_emojis'] if emoji['user_id'] == int(user_id)]
-
-    # 必要なフォーマットに変換
-    formatted_emojis = []
-    for emoji in filtered_emojis:
-        emoji_title = emoji['emoji_id']  # emoji_idに基づいて適切な絵文字タイトルを割り当てる
-        formatted_emojis.append({'title': emoji_title, 'date': emoji['date']})
-
-    return jsonify(formatted_emojis)
-
-#ユーザーが記録した絵文字を保存
-@emojis_blueprint.route('/users/<int:user_id>/emojis/<int:emoji_id>/record', methods=['POST'])
-<<<<<<< HEAD
-def record_emoji(user_id, emoji_id):
-    # データベース接続を取得
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            # 現在の日時を取得
-            recorded_at = datetime.utcnow()
+            # user_emojis テーブルから特定のユーザーIDに対応する絵文字を取得
+            cursor.execute('''
+                SELECT ue.emoji_id, e.content, ue.date
+                FROM user_emojis AS ue
+                INNER JOIN emojis AS e ON ue.emoji_id = e.id
+                WHERE ue.user_id = %s
+            ''', (user_id,))
+            emojis_result = cursor.fetchall()
+        
+        # 結果をJSON形式でクライアントに返却
+        return jsonify({'emojis': emojis_result})
+    
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Database error"}), 500
+    finally:
+        conn.close()
 
-            # 絵文字記録をデータベースに挿入するクエリを実行
-            cursor.execute('INSERT INTO user_emojis (user_id, emoji_id, date) VALUES (%s, %s, %s)', 
-                           (user_id, emoji_id, recorded_at))
-            
-            # 挿入されたレコードのIDを取得
-            record_id = cursor.lastrowid
+#ユーザーが記録した絵文字を保存
+@emojis_blueprint.route('/users/<int:user_id>/emojis/<int:emoji_id>/record', methods=['POST'])
+def record_emoji(user_id, emoji_id):
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            # 現在の日付と時刻を取得
+            current_datetime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+
+            # 新しい絵文字データを user_emojis テーブルに挿入
+            cursor.execute('''
+                INSERT INTO user_emojis (user_id, emoji_id, date)
+                VALUES (%s, %s, %s)
+            ''', (user_id, emoji_id, current_datetime))
 
             # データベースの変更をコミット
             conn.commit()
 
-            # 新しい絵文字記録を返す
-            return jsonify({
-                "id": record_id,
+            # 追加されたレコードのIDを取得
+            new_record_id = cursor.lastrowid
+
+            # 新しい絵文字データを返す
+            new_emoji_data = {
+                "id": new_record_id,
                 "user_id": user_id,
                 "emoji_id": emoji_id,
-                "recorded_at": recorded_at.isoformat() + 'Z'
-            }), 201
+                "date": current_datetime,
+            }
+            return jsonify(new_emoji_data), 201
+
     except pymysql.MySQLError as e:
         print(f"Error: {e}")
-        conn.rollback()
+        conn.rollback()  # エラーが発生した場合はロールバック
         return jsonify({"error": "Database error"}), 500
     finally:
         conn.close()
-
-=======
-def record_emoji(user_id,emoji_id):
-    # JSONファイルを読み込む
-    try:
-        file_path = os.path.join(current_app.root_path, 'data', 'user_emojis.json')
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-    except (IOError, json.JSONDecodeError):
-        data = {'user_emojis': []}
-
-    # 新しい絵文字データを作成
-    new_emoji_data = {
-        "id": len(data['user_emojis']) + 1,  # 新しいIDを生成
-        "user_id": user_id,
-        "emoji_id": emoji_id,
-        "date": datetime.utcnow().isoformat() + 'Z',
-    }
-
-    # データを追加
-    data['user_emojis'].append(new_emoji_data)
-
-    # ファイルに書き戻す
-    try:
-        file_path = os.path.join(current_app.root_path, 'data', 'user_emojis.json')
-        with open(file_path, 'w') as file:
-            json.dump(data, file, indent=4)
-    except IOError:
-        return jsonify({"error": "Could not save data"}), 500
-
-    # 新しい絵文字データを返す
-    return jsonify(new_emoji_data), 201
->>>>>>> e11ac34 (データ変更、APIの書き込みを追加)
 
 
 #特定の日付に紐づく絵文字データの取得
@@ -142,45 +99,28 @@ def get_emoji_filtered_date(user_id, date):
     try:
         correct_date = datetime.strptime(date, '%Y-%m-%d').date()
     except ValueError:
-<<<<<<< HEAD
-        # 日付の形式が間違えればエラーを返す
         return jsonify({"error": "Incorrect date format, should be YYYY-MM-DD"}), 400
-    
-    # データベース接続を取得
+
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
             # 特定の日付に紐づく絵文字データを取得するクエリを実行
             cursor.execute('''
-                SELECT ue.id, ue.user_id, ue.emoji_id, ue.date, e.content
-                FROM user_emojis ue
-                JOIN emojis e ON ue.emoji_id = e.id
+                SELECT ue.emoji_id, e.content, ue.date
+                FROM user_emojis AS ue
+                INNER JOIN emojis AS e ON ue.emoji_id = e.id
                 WHERE ue.user_id = %s AND DATE(ue.date) = %s
-            ''', (user_id, correct_date.strftime('%Y-%m-%d')))
+            ''', (user_id, correct_date))
             emojis = cursor.fetchall()
 
             # 結果をJSON形式でクライアントに返却
             return jsonify(emojis)
+
     except pymysql.MySQLError as e:
         print(f"Error: {e}")
         return jsonify({"error": "Database error"}), 500
     finally:
         conn.close()
-
-=======
-        return jsonify({"error": "Incorrect date format, should be YYYY-MM-DD"}), 400
-
-    file_path = os.path.join(current_app.root_path, 'data', 'user_emojis.json')
-    with open(file_path, 'r', encoding="utf-8") as f:
-        user_emojis_data = json.load(f)
-
-    filtered_emoji = [
-        emoji for emoji in user_emojis_data['user_emojis']
-        if emoji['user_id'] == user_id and datetime.strptime(emoji['date'].split('T')[0], '%Y-%m-%d').date() == correct_date
-    ]
-
-    return jsonify(filtered_emoji)
->>>>>>> e11ac34 (データ変更、APIの書き込みを追加)
 
 #特定の期間の日付に紐づく絵文字データの取得
 

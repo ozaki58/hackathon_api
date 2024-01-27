@@ -6,13 +6,12 @@ from flask import Blueprint, jsonify
 import pymysql.cursors
 quests_blueprint = Blueprint('quests', __name__)
 
-#データベース設定
 def get_db_connection():
-    return pymysql.connect(host='localhost',
-                    user='root',
+    return pymysql.connect(host='tutorial.clmkyaosgimn.ap-northeast-1.rds.amazonaws.com',
+                    user='admin',
                     db='hackathon_project',
                     charset='utf8mb4',
-                    password='ozaki',
+                    password='OZaKi1030',
                     cursorclass=pymysql.cursors.DictCursor)
 
 #目標に紐づくクエストリストの取得
@@ -49,39 +48,44 @@ def get_quest(quest_id):
     finally:
         conn.close()
 
-#クエストの詳細編集
+#クエストの詳細を更新
 @quests_blueprint.route('/users/<int:user_id>/goals/<int:goal_id>/quests/<int:quest_id>', methods=['PATCH'])
-def quest_edit(user_id,goal_id,quest_id):
-    file_path = os.path.join(current_app.root_path, 'data', 'quests.json')
-
-    with open(file_path, 'r', encoding="utf-8") as f:
-        quests_data = json.load(f)
-
+def quest_edit(user_id, goal_id, quest_id):
     new_title = request.json.get('title')
     new_description = request.json.get('description')
     new_status = request.json.get('status')
     new_end_date = request.json.get('end_date')
 
+    conn = get_db_connection()
     try:
-        quest_index = next(index for index, quest in enumerate(quests_data["quests"]) if quest["user_id"] == user_id and quest["goal_id"] == goal_id and quest["id"] == quest_id)
-    except StopIteration:
-        return jsonify({"error": "指定されたデータは存在しない"}), 400
+        with conn.cursor() as cursor:
+            # クエストの詳細を更新するクエリを実行
+            query = '''
+                UPDATE quests
+                SET title = %s, description = %s, status = %s, end_date = %s, coins_distributed=0
+                WHERE id = %s
+            '''
+            cursor.execute(query, (new_title, new_description, new_status, new_end_date, quest_id))
 
-    if new_title:
-        quests_data["quests"][quest_index]["title"] = new_title
-    if new_description:
-        quests_data["quests"][quest_index]["description"] = new_description
-    if new_status:
-        quests_data["quests"][quest_index]["status"] = new_status
-    if new_end_date:
-        quests_data["quests"][quest_index]["end_date"] = new_end_date
+            # データベースの変更をコミット
+            conn.commit()
 
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(quests_data, f, ensure_ascii=False, indent=4)
+            # 更新されたクエストのデータを取得
+            cursor.execute('SELECT * FROM quests WHERE id = %s', (quest_id,))
+            updated_quest = cursor.fetchone()
 
-    return jsonify(quests_data["quests"][quest_index])
+            if updated_quest:
+                return jsonify(updated_quest)
+            else:
+                return jsonify({"error": "指定されたデータは存在しない"}), 404
 
-# クエストの新規作成
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+        conn.rollback()  # エラーが発生した場合はロールバック
+        return jsonify({"error": "Database error"}), 500
+    finally:
+        conn.close()
+
 @quests_blueprint.route('/users/<int:user_id>/goals/<int:goal_id>/quest', methods=['POST'])
 def post_quest(user_id, goal_id):
     title = request.json.get('title')
@@ -90,34 +94,43 @@ def post_quest(user_id, goal_id):
 
     if not title or not description or not end_date:
         return jsonify({"error": "Title, description, and end_date are required."}), 400
-    # chats.json ファイルのパスを取得
-    file_path = os.path.join(current_app.root_path, 'data','quests.json')
 
-    # chats.json ファイルを読み込む
-    with open(file_path, 'r', encoding='utf-8') as file:
-        quests = json.load(file)
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            # quests テーブルに新しいクエストを挿入
+            cursor.execute('''
+                INSERT INTO quests (title, description, status, end_date,coins_distributed)
+                VALUES (%s, %s, %s, %s,0)
+            ''', (title, description, 0, end_date))
+            quest_id = cursor.lastrowid
 
-    # 新しいクエストメッセージを作成
-    new_quest = {
-        "id": len(quests['quests']) + 1,  # 仮のID生成
-        "user_id": user_id,
-        "goal_id": goal_id,
-        "title": title,
-        "description": description,
-        "status": 0,
-        "end_date": end_date,
-        "coins_distributed": False
-    }
+            # goal_quests テーブルにクエストと目標の関連を挿入
+            cursor.execute('''
+                INSERT INTO goal_quests (goal_id, quest_id)
+                VALUES (%s, %s)
+            ''', (goal_id, quest_id))
 
-    # チャットリストに新しいメッセージを追加
-    quests['quests'].append(new_quest)
+            # データベースの変更をコミット
+            conn.commit()
 
-    # 更新されたデータをファイルに書き戻す
-    with open(file_path, 'w', encoding='utf-8') as file:
-        json.dump(quests, file, ensure_ascii=False, indent=4)
+            # 新しいクエストのデータを返す
+            new_quest = {
+                "id": quest_id,
+                "title": title,
+                "description": description,
+                "status": 0,
+                "end_date": end_date,
+                "coins_distributed": 0
+            }
+            return jsonify(new_quest), 201
 
-    return jsonify(new_quest), 201
-
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+        conn.rollback()  # エラーが発生した場合はロールバック
+        return jsonify({"error": "Database error"}), 500
+    finally:
+        conn.close()
 # クエスト削除
 @quests_blueprint.route('/quests/<int:quest_id>', methods=['DELETE'])
 def delete_quest(quest_id):
