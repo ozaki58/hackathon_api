@@ -2,16 +2,25 @@ from flask import Flask, jsonify, current_app,request,Response
 import json
 import os
 from datetime import datetime
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify,make_response
 import pymysql.cursors
 quests_blueprint = Blueprint('quests', __name__)
 
+# #データベース設定
+# def get_db_connection():
+#     return pymysql.connect(host='tutorial.clmkyaosgimn.ap-northeast-1.rds.amazonaws.com',
+#                     user='admin',
+#                     db='hackathon_project',
+#                     charset='utf8mb4',
+#                     password='OZaKi1030',
+#                     cursorclass=pymysql.cursors.DictCursor)
+
 def get_db_connection():
-    return pymysql.connect(host='tutorial.clmkyaosgimn.ap-northeast-1.rds.amazonaws.com',
-                    user='admin',
+    return pymysql.connect(host='localhost',
+                    user='root',
                     db='hackathon_project',
                     charset='utf8mb4',
-                    password='OZaKi1030',
+                    password='ozaki',
                     cursorclass=pymysql.cursors.DictCursor)
 
 #目標に紐づくクエストリストの取得
@@ -144,6 +153,7 @@ def delete_quest(quest_id):
             return make_response(jsonify({"error": "Quest not found"}), 404)
 
         # クエストを削除
+        cursor.execute('DELETE FROM goal_quests WHERE quest_id = %s', (quest_id,))
         cursor.execute('DELETE FROM quests WHERE id = %s', (quest_id,))
         conn.commit()
         

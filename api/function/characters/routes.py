@@ -11,13 +11,21 @@ import base64
 
 characters_blueprint = Blueprint('characters', __name__)
 
-#データベース設定
+# #データベース設定
+# def get_db_connection():
+#     return pymysql.connect(host='tutorial.clmkyaosgimn.ap-northeast-1.rds.amazonaws.com',
+#                     user='admin',
+#                     db='hackathon_project',
+#                     charset='utf8mb4',
+#                     password='OZaKi1030',
+#                     cursorclass=pymysql.cursors.DictCursor)
+
 def get_db_connection():
-    return pymysql.connect(host='tutorial.clmkyaosgimn.ap-northeast-1.rds.amazonaws.com',
-                    user='admin',
+    return pymysql.connect(host='localhost',
+                    user='root',
                     db='hackathon_project',
                     charset='utf8mb4',
-                    password='OZaKi1030',
+                    password='ozaki',
                     cursorclass=pymysql.cursors.DictCursor)
 
 # 　アプリに登録されているキャラクターリスト取得
