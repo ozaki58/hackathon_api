@@ -13,10 +13,10 @@ goals_blueprint = Blueprint('goals', __name__)
 # #データベース設定
 # def get_db_connection():
 #     return pymysql.connect(host='tutorial.clmkyaosgimn.ap-northeast-1.rds.amazonaws.com',
-#                     user='admin',
+#                     user='',
 #                     db='hackathon_project',
 #                     charset='utf8mb4',
-#                     password='OZaKi1030',
+#                     password='',
 #                     cursorclass=pymysql.cursors.DictCursor)
 
 def get_db_connection():
@@ -24,7 +24,7 @@ def get_db_connection():
                     user='root',
                     db='hackathon_project',
                     charset='utf8mb4',
-                    password='ozaki',
+                    password='',
                     cursorclass=pymysql.cursors.DictCursor)
 
 
@@ -32,7 +32,7 @@ def get_db_connection():
 @goals_blueprint.route('/users/<int:user_id>/chat_goal', methods=['POST'])
 def chat_goal(user_id):
     client = OpenAI(
-        api_key=('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'),
+        api_key=(''),
     )
 
     # ユーザーからのチャット入力を受け取る
@@ -78,7 +78,7 @@ def chat_register(user_id,content,sender_type):
 def refine_goal_with_chat(user_id,chat_input, client_instance):
     # GPTモデルを使ってチャット形式で目標を深掘りするロジックを実装
     client = OpenAI(
-        api_key=('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'),
+        api_key=(''),
     )
     # ユーザーの入力と過去のチャットからなるプロンプトを作成
     prompt = '目標が送られてきます。もっと詳細な目標に近づくために深掘りをしてください。相手に質問することがなければ、最終的な目標を20字以内で短くまとめてこれで登録しますがよろしいですか？と送ってください。必ず、日本語で返してください。褒めながら進めてください。'
