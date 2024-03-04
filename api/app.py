@@ -9,6 +9,9 @@ from function.users.routes import users_blueprint
 from function.characters.routes import characters_blueprint
 from function.emojis.routes import emojis_blueprint
 from function.chats.routes import chats_blueprint
+
+
+# MySQLデータベース設定
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -23,9 +26,13 @@ app.register_blueprint(chats_blueprint)
 
 
 
+
 @app.route('/some_path')
 def some_function():
     return {'some_key': 'some_value'}
+
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=5000, debug=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -6,7 +6,8 @@
             "prompt": "",
             "image": "character/character1.png",
             "genre_id": "1",
-            "price": 1200
+            "price": 1200,
+            "detail": "リサは、モンドの騎士団の団長である。彼女は、騎士団の団長として、モンドの平和を守るために、日々奮闘している。"
             
         },
         {
@@ -15,6 +16,7 @@
             "prompt": "",
             "image": "character/character2.png",
             "genre_id": "1",
+            "detail": "薫は、モンドの騎士団の団長である。彼女は、騎士団の団長として、モンドの平和を守るために、日々奮闘している。",
             "price": 3000
             
         },
@@ -25,20 +27,22 @@
             "prompt": "",
             "image": "character/character3.png",
             "genre_id": "2",
+            "detail": "みつきは、モンドの騎士団の団長である。彼女は、騎士団の団長として、モンドの平和を守るために、日々奮闘している。",
             "price": 3000
             
         },
         {
-            "id":3,
+            "id":4,
             "name": "ミツキ",
             "prompt": "",
             "image": "character/character4.png",
             "genre_id": "2",
+            "detail": "薫は、モンドの騎士団の団長である。彼女は、騎士団の団長として、モンドの平和を守るために、日々奮闘している。",
             "price": 3000
             
         },
         {
-            "id":3,
+            "id":5,
             "name": "ミツキ",
             "prompt": "",
             "image": "character/character1.png",
@@ -47,12 +51,12 @@
             
         },
         {
-            "id":3,
+            "id":6,
             "name": "ミツキ",
             "prompt": "",
             "image": "character/character2.png",
             "genre_id": "4",
-            "price": 3000
+            "price": 6000
             
         }
 
