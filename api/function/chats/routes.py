@@ -12,10 +12,10 @@ chats_blueprint = Blueprint('chats', __name__)
 # #データベース設定
 # def get_db_connection():
 #     return pymysql.connect(host='tutorial.clmkyaosgimn.ap-northeast-1.rds.amazonaws.com',
-#                     user='admin',
+#                     user=',
 #                     db='hackathon_project',
 #                     charset='utf8mb4',
-#                     password='OZaKi1030',
+#                     password='',
 #                     cursorclass=pymysql.cursors.DictCursor)
 
 def get_db_connection():
@@ -23,7 +23,7 @@ def get_db_connection():
                     user='root',
                     db='hackathon_project',
                     charset='utf8mb4',
-                    password='ozaki',
+                    password='',
                     cursorclass=pymysql.cursors.DictCursor)
 #目標をgptAPIでタスク分解し、作成されたクエストを保存
 
@@ -35,7 +35,7 @@ def generate_quests(goal_id):
     # リクエストから目標を取得
     # OpenAI APIキーを設定する
     client = OpenAI(
-        api_key=('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'),
+        api_key=(''),
     )
     goal = request.json.get('goal')
     #目標をデータベースに保存
@@ -100,7 +100,7 @@ def quest_register(goal_id):
 def post_chat(user_id, character_id):
     conn = get_db_connection()
     client = OpenAI(
-        api_key=('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'),
+        api_key=(''),
     )
     # リクエストからユーザーのメッセージと送信者タイプを取得
     content = request.json.get('content')
