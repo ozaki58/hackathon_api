@@ -7,5 +7,5 @@ def get_db_connection():
                     user='admin',
                     db='hackathon_project',
                     charset='utf8mb4',
-                    password='OZaKi1030',
+                    password='',
                     cursorclass=pymysql.cursors.DictCursor)
