@@ -10,10 +10,10 @@ emojis_blueprint = Blueprint('emojis', __name__)
 # #データベース設定
 # def get_db_connection():
 #     return pymysql.connect(host='tutorial.clmkyaosgimn.ap-northeast-1.rds.amazonaws.com',
-#                     user='admin',
+#                     user='',
 #                     db='hackathon_project',
 #                     charset='utf8mb4',
-#                     password='OZaKi1030',
+#                     password='',
 #                     cursorclass=pymysql.cursors.DictCursor)
 
 def get_db_connection():
@@ -21,7 +21,7 @@ def get_db_connection():
                     user='root',
                     db='hackathon_project',
                     charset='utf8mb4',
-                    password='ozaki',
+                    password=',
                     cursorclass=pymysql.cursors.DictCursor)
 
 #絵文字のリストを取得
